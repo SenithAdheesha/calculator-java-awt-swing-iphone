@@ -31,8 +31,12 @@ public class Claculator {
     JPanel displayPanel = new JPanel();
     JPanel buttonsPanel = new JPanel();
 
+    String A = "0";
+    String operator = null;
+    String B = null;
+
     Claculator() {
-        frame.setVisible(true);
+        // frame.setVisible(true);
         frame.setSize(bordwidth, bordheight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -81,13 +85,60 @@ public class Claculator {
                     String buttonvalue = button.getText();
 
                     if (Arrays.asList(rightSymbols).contains(buttonValue)) {
+                        if (buttonValue == "=") {
+                            if (A != null) {
+                                B = displayLabel.getText();
+                                double numA = Double.parseDouble(A);
+                                double numB = Double.parseDouble(B);
+
+                                if (operator == "+") {
+                                    displayLabel.setText(removeZeroDecimal(numA + numB));
+
+                                } else if (operator == "-") {
+                                    displayLabel.setText(removeZeroDecimal(numA - numB));
+
+                                } else if (operator == "÷") {
+                                    displayLabel.setText(removeZeroDecimal(numA / numB));
+
+                                } else if (operator == "×") {
+                                    displayLabel.setText(removeZeroDecimal(numA * numB));
+                                }
+                                clearAll();
+                            }
+
+                        } else if ("+-×÷".contains(buttonValue)) {
+                            if (operator == null) {
+                                A = displayLabel.getText();
+                                displayLabel.setText("0");
+                                B = "0";
+                            }
+                            operator = buttonValue;
+                        }
 
                     } else if (Arrays.asList(topSymbols).contains(buttonValue)) {
+                        if (buttonValue == "AC") {
+                            clearAll();
+                            displayLabel.setText("0");
+
+                        } else if (buttonValue == "+/-") {
+                            double numDisplay = Double.parseDouble(displayLabel.getText());
+                            numDisplay *= -1;
+                            displayLabel.setText(removeZeroDecimal(numDisplay));
+
+                        } else if (buttonValue == "%") {
+                            double numDisplay = Double.parseDouble(displayLabel.getText());
+                            numDisplay /= 100;
+                            displayLabel.setText(removeZeroDecimal(numDisplay));
+
+                        }
 
                     } else {
                         if (buttonvalue == ".") {
+                            if (!displayLabel.getText().contains(buttonValue)) {
+                                displayLabel.setText(displayLabel.getText() + buttonValue);
+                            }
 
-                        } else if ("123456789".contains(buttonValue)) {
+                        } else if ("0123456789".contains(buttonValue)) {
                             if (displayLabel.getText() == "0") {
                                 displayLabel.setText(buttonValue);
                             } else {
@@ -97,7 +148,21 @@ public class Claculator {
                     }
                 }
             });
+            frame.setVisible(true);
 
         }
+    }
+
+    void clearAll() {
+        A = "0";
+        operator = null;
+        B = null;
+    }
+
+    String removeZeroDecimal(double numDisplay) {
+        if (numDisplay % 1 == 0) {
+            return Integer.toString((int) numDisplay);
+        }
+        return Double.toString(numDisplay);
     }
 }
